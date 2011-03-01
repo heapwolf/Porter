@@ -25,9 +25,11 @@ Create a client side data access layer...
       
 Use it...
 
-      dal.get.users({ 
-      
-        'partialname': $(this).val()
-      }, 
-      
-      app.renderers.renderUsers);      
+      dal.get.users(
+        { 
+          'partialname': $(this).val()
+        }, 
+        function(errors, respnose) {
+          // do some stuff...
+        }
+      );
