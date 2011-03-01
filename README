@@ -1,0 +1,33 @@
+
+Create a client side data access layer...
+
+      var dal = DAL({
+  
+        get: {
+          users: '/api/users/:partialname',
+
+          apps: '/api/apps/:partialname',
+          appsBy: '/api/apps/:username',
+
+          servers: '/api/servers',
+          auth: '/api'
+        },
+  
+        post: {
+          users: '/api/users'
+        },
+  
+        delete: {
+          users: '/api/users/:username'
+        }
+
+      }, 8080);
+      
+Use it...
+
+      dal.get.users({ 
+      
+        'partialname': $(this).val()
+      }, 
+      
+      app.renderers.renderUsers);      
