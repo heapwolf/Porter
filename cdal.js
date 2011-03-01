@@ -1,10 +1,24 @@
 
-function DAL(verbs, port, ip, protocol) {
+function DAL(verbs) {
 
   var self = this;
 
   this.data = {};
   this.requests = {};
+
+  this.opts = {
+    protocol: 'http',
+    ip: 127.0.0.1,
+    port: 80    
+  };
+  
+  this.options = function(o) {
+    for (var option in options) {
+      if (optionss.hasOwnProperty(option)) {
+        self.options[option] = options[option];
+      }
+    }
+  };
   
   this.clear = function() {
     for(var d in self.data) {
@@ -32,7 +46,8 @@ function DAL(verbs, port, ip, protocol) {
   }
 
   function req(url, method, replace, data, callback) {
-    url = [protocol, '://', ip, ':', port, url, '?callback=?'].join('');
+    
+    url = [self.opts.protocol, '://', self.opts.ip, ':', self.opts.port, url, '?callback=?'].join('');
     
     if(!self.data[url] || remote) {
 
@@ -41,7 +56,7 @@ function DAL(verbs, port, ip, protocol) {
          type:     method,
          dataType: 'json',
          contentType: 'application/json',
-         data:     data : null,
+         data:     data || null,
          beforeSend: function(xhr) {
 
            xhr.setRequestHeader('Accept', 'application/json');
@@ -55,6 +70,7 @@ function DAL(verbs, port, ip, protocol) {
            self.data[url] = data;
            callback(null, data, textStatus, XMLHttpRequest);
          },
+         
          error: function(XMLHttpRequest, textStatus, errorThrown){
            callback([XMLHttpRequest, textStatus, errorThrown], null);
          }
