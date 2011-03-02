@@ -30,7 +30,7 @@ The deeds constructor takes a single object literal containing paths grouped by 
 
     );
 
-The `users` function was defined in the `post` group. We pass it 1) an object literal that supplants the values in the request url and 2) a callback function that will process when the request is done.
+The `users` function was generated from it's definition in the `get` group. We pass it 1) an object literal that supplants the values in the request url and 2) a callback function that will process when the request is done.
 
 ### A more complex example...
 
@@ -83,7 +83,7 @@ And here is the above code in use...
 
     );
 
-The `users` function was defined in the `post` group. We pass it 1) a payload object, 2) a function to dynamically set the headers associated with this particular request, and 3) a callback function for when the request has finished processing.
+The `users` function was generated from its definition in the `post` group. We pass it 1) a payload object, 2) a function to dynamically set the headers associated with this particular request, and 3) a callback function for when the request has finished processing.
       
 # Licence
 
