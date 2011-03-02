@@ -65,6 +65,7 @@ The deeds constructer returns itself, so the `use` function can be chained to it
 `host` String - An IP address of the host server that will accept the requests.<br/>
 `headers` Object - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` String - The protocol to be used for all requests, ie 'http', 'https'.<br/>
+`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library.<br/>
 
 And here is the above code in use...
 
@@ -73,7 +74,7 @@ And here is the above code in use...
       { foo: 'data' },
 
       function(xhr) {
-        xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('user:password'));
+        xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('username:password'));
       },
 
       function(error, response) {
