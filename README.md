@@ -61,10 +61,10 @@ The `users` function was defined in the `post` group. We pass it 1) an object li
 
 The deeds constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
 
-`port` {number} - The port of the server that will accept the requests.
-`host` {string} - An IP address of the host server that will accept the requests.
-`headers` {object} - An object literal of HTTP request headers that will be attached to each request.
-`protocol` {string} - The protocol to be used for all requests, ie 'http', 'https'.
+`port` {number} - The port of the server that will accept the requests.<br/>
+`host` {string} - An IP address of the host server that will accept the requests.<br/>
+`headers` {object} - An object literal of HTTP request headers that will be attached to each request.<br/>
+`protocol` {string} - The protocol to be used for all requests, ie 'http', 'https'.<br/>
 
 ### An example of the above code in use...
 
