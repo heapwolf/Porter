@@ -1,79 +1,86 @@
 
 # Deeds.js
-Deeds is a very simple client side Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making ajax calls.
+Deeds is a very simple client side Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making ajax calls. Currently this uses jQuery to make ajax requests. This will get replaced eventually, and deeds will become node.js module-capable.
 
 ### How Does it work?
 Here is a very trivial example. An application defines several calls to the Middle-end which are grouped by the HTTP verb that they will use.
 
-      var deed = new deeds({
-        
-        get: {
-          users: '/api/users/:partialname',
-          apps: '/api/apps/'
-        },
-        
-        post: {
-          users: '/api/users'
-        }
-        
-      });
+    var deed = new deeds({
+      
+      get: {
+        users: '/api/users/:partialname',
+        apps: '/api/apps/'
+      },
+      
+      post: {
+        users: '/api/users'
+      }
+      
+    });
 
 The deeds constructor takes a single object literal that contains paths grouped by the HTTP verb that they will use. The paths can have tokens in them that get supplanted when called. Here is our above definition put to use...
 
-      deed.get.users(
+    deed.get.users(
 
-        { partialname: 'johnny' },
+      { partialname: 'johnny' },
 
-        function(error, response) {
-          console.log(error || response);
-        }
+      function(error, response) {
+        console.log(error || response);
+      }
 
-      );
+    );
 
-### Here we have a more complex example...
+### A more complex example...
 
-      var deed = new deeds({
-        
-        get: { // optional
-          users: '/api/users/:partialname',
+    var deed = new deeds({
+      
+      get: { // optional
+        users: '/api/users/:partialname',
 
-          apps: '/api/apps/:partialname',
-          appsBy: '/api/apps/:username',
+        apps: '/api/apps/:partialname',
+        appsBy: '/api/apps/:username',
 
-          servers: '/api/servers',
-          auth: '/api'
-        },
-        
-        post: { // optional
-          users: '/api/users'
-        },
-        
-        delete: { // optional
-          users: '/api/users/:username'
-        }
+        servers: '/api/servers',
+        auth: '/api'
+      },
+      
+      post: { // optional
+        users: '/api/users'
+      },
+      
+      delete: { // optional
+        users: '/api/users/:username'
+      }
 
-      }).use({
-        port: 8080, // optional 
-        headers: { 'Accept': 'application/json' } // optional
-      });
+    }).use({
+      port: 8080, // optional 
+      headers: { 'Accept': 'application/json' } // optional
+    });
+
+The deeds constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
+
+`port` {number} - The port of the server that will accept the requests.
+`host` {string} - An IP address of the host server that will accept the requests.
+`headers` {object} - An object literal of HTTP request headers that will be attached to each request.
+`protocol` {string} - The protocol to be used for all requests, ie 'http', 'https'.
 
 ### An example of the above code in use...
 
-      deed.get.users(
+    deed.pot.users(
 
-        { partialname: 'johnny' }, // optional
+      { /*data*/ }, // optional
 
-        { /*data*/ }, // optional
+      function(xhr) { // optional
+        xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('user:password'));
+      },
 
-        function(xhr) { // optional
-          xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('user:password'));
-        },
+      function(error, response) { // required
+        console.log(error || response);
+      }
 
-        function(error, response) { // required
-          console.log(error || response);
-        }
-
-      );
+    );
+      
+The above code demonstrates passing an object literal that supplants the values in the request url. It passes an object as the payload and dynamically sets the headers associated with this particular request.
       
 # Licence
 
