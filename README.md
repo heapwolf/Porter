@@ -1,7 +1,35 @@
 
-# What?
+# Deeds.js
 
-Create a client side data access layer...
+## What?
+Deeds is a very simple client side Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making ajax calls. Here is a very trivial example. An application defines several calls to the Middle-end which are grouped by the HTTP verb that they will use.
+
+      var deed = new deeds({
+        
+        get: { // optional
+          users: '/api/users/:partialname',
+          apps: '/api/apps/:partialname'
+        },
+        
+        post: { // optional
+          users: '/api/users'
+        }
+        
+      });
+
+## Usage. Here is our above definition put to use...
+
+      deed.get.users(
+
+        { partialname: 'johnny' },
+
+        function(error, response) {
+          console.log(error || response);
+        }
+
+      );
+
+### Here we have a more complex example...
 
       var deed = new deeds({
         
@@ -28,7 +56,7 @@ Create a client side data access layer...
         headers: { 'Accept': 'application/json' } // optional
       });
 
-# How?
+# An example of the above code in use...
 
       deed.get.users(
 
