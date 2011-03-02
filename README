@@ -37,7 +37,7 @@ Create a client side data access layer...
         { /*data*/ }, // optional
 
         function(xhr) { // optional
-          xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64([$('#username').val(), ':', $('#password').val()].join()));
+          xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('user:password'));
         },
 
         function(error, response) { // required
