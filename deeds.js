@@ -71,8 +71,8 @@
         self.xhr.send(conf.url);
         
         self.xhr.onreadystatechange = function() {
-          
- 				  switch (self.xhr.readyState){
+
+          switch (self.xhr.readyState){
             case 1:
               self.listeners.loading();
             break;
@@ -94,7 +94,7 @@
                 self.listeners.error(self.xhr, statusText, ex.message);
               }
             break;
- 				  }         
+          }         
         };
       };
       return this;
@@ -148,14 +148,7 @@
 
             for(var header in headers) {
               if (verbs.hasOwnProperty(verb)) {
-                try {
-            
-                  xhr.setRequestHeader(header, headers[header]); 
-                }
-                catch(ex) {
-                  throw new Error("shit");
-                  return false;
-                }
+                xhr.setRequestHeader(header, headers[header]); 
               }
             }
       
