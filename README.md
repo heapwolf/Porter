@@ -17,7 +17,7 @@ Deeds is a very simple client side Data Access Layer. An abstraction meant to re
         
       });
 
-## Usage. Here is our above definition put to use...
+### Usage. Here is our above definition put to use...
 
       deed.get.users(
 
@@ -56,7 +56,7 @@ Deeds is a very simple client side Data Access Layer. An abstraction meant to re
         headers: { 'Accept': 'application/json' } // optional
       });
 
-# An example of the above code in use...
+### An example of the above code in use...
 
       deed.get.users(
 
