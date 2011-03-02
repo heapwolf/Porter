@@ -88,7 +88,9 @@
                 statusText = self.xhr.statusText;
             
             	try {
-                self.listeners.success(JSON.parse(response), statusText, self.xhr);
+            	  response = JSON.parse(response);
+            	  self.data[conf.url] = response;
+                self.listeners.success(response, statusText, self.xhr);
             	}
             	catch(ex) {
                 self.listeners.error(self.xhr, statusText, ex.message);
@@ -135,48 +137,42 @@
 
       url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, url, '?callback=?'].join('');
 
-      if(!self.data[url] || remote) {
-
         var xhrConf = {
-        
-          url: url,
-          type: method,
-          data: data || null,
-          beforeSend: function(xhr) {
+    
+        url:         url,
+        type:        method,
+        data:        data || null,
+        beforeSend:  function(xhr) {
 
-            var headers = self.options.headers;
+          var headers = self.options.headers;
 
-            for(var header in headers) {
-              if (verbs.hasOwnProperty(verb)) {
-                xhr.setRequestHeader(header, headers[header]); 
-              }
+          for(var header in headers) {
+            if (verbs.hasOwnProperty(verb)) {
+              xhr.setRequestHeader(header, headers[header]); 
             }
-      
-            if(stagingCall) {
-              stagingCall(xhr);
-            }
-          },
-
-          success: function(data, textStatus, XMLHttpRequest) {
-            self.data[url] = data;
-            callback(null, data, textStatus, XMLHttpRequest);
-          },
-
-          error: function(XMLHttpRequest, textStatus, errorThrown){
-            callback([XMLHttpRequest, textStatus, errorThrown], null);
           }
+  
+          if(stagingCall) {
+            stagingCall(xhr);
+          }
+        },
 
+        success: function(data, textStatus, XMLHttpRequest) {
+          self.data[url] = data;
+          callback(null, data, textStatus, XMLHttpRequest);
+        },
+
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+          callback([XMLHttpRequest, textStatus, errorThrown], null);
         }
 
-        if(window) {
-          ajax = self.options.lib ? self.options.lib(xhrConf) : new self.ajax(xhrConf).run();
-        }
-        else {
-          // nodejs
-        }
+      }
+
+      if(window) {
+        ajax = self.options.lib ? self.options.lib(xhrConf) : new self.ajax(xhrConf).run();
       }
       else {
-        callback(self.data[url]);
+        // nodejs
       }
     }
 
@@ -196,6 +192,10 @@
                     alen = args.length,
                     klen = keys.length,
                     key;
+                
+                if(alen === 1) {
+                  return callback(self.data[url]);
+                }
                 
                 if (klen > 0) {
               
