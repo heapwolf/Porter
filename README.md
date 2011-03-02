@@ -1,6 +1,6 @@
 
 # deeds.js
-deeds is a very simple client side Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making ajax calls. deeds does not use any 3rd party ajax libraries, but can. It's not node.js ready, but will be soon.
+deeds is a very easy to use, portable Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making ajax calls. deeds does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
 
 ### An example...
 Here is a very trivial example where we define two GETs and a POST.
