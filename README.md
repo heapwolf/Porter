@@ -30,6 +30,8 @@ The deeds constructor takes a single object literal containing paths grouped by 
 
     );
 
+The `users` function was defined in the `post` group. We pass it 1) an object literal that supplants the values in the request url and 2) a callback function that will process when the request is done.
+
 ### A more complex example...
 
     var deed = new deeds({
@@ -66,7 +68,7 @@ The deeds constructer returns itself, so the `use` function can be chained to it
 
 ### An example of the above code in use...
 
-    deed.pot.users(
+    deed.post.users(
 
       { /*data*/ }, // optional
 
@@ -74,13 +76,14 @@ The deeds constructer returns itself, so the `use` function can be chained to it
         xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('user:password'));
       },
 
-      function(error, response) { // required
+      function(error, response) {
+        
         console.log(error || response);
       }
 
     );
-      
-The above code demonstrates passing an object literal that supplants the values in the request url. It passes an object as the payload and dynamically sets the headers associated with this particular request.
+
+The `users` function was defined in the `post` group. We pass it 1) a payload object, 2) a function to dynamically set the headers associated with this particular request, and 3) a callback function for when the request has finished processing.
       
 # Licence
 
