@@ -1,7 +1,7 @@
 
-// procure, asset
+// procure, asset, yield
 
-function assetIO(verbs) {
+function deeds(verbs) {
 
   var self = this;
 

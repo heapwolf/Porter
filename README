@@ -3,9 +3,9 @@
 
 Create a client side data access layer...
 
-      var dal = DAL({
-  
-        get: {
+      var deed = new deeds({
+        
+        get: { // optional
           users: '/api/users/:partialname',
 
           apps: '/api/apps/:partialname',
@@ -14,26 +14,36 @@ Create a client side data access layer...
           servers: '/api/servers',
           auth: '/api'
         },
-  
-        post: {
+        
+        post: { // optional
           users: '/api/users'
         },
-  
-        delete: {
+        
+        delete: { // optional
           users: '/api/users/:username'
         }
 
-      }, 8080);
-      
+      }).use({
+        port: 8080, // optional 
+        headers: { 'Accept': 'application/json' } // optional
+      });
+
 # How?
 
-      dal.get.users(
-        { 
-          'partialname': $(this).val()
-        }, 
-        function(errors, respnose) {
-          // do some stuff...
+      deed.get.users(
+
+        { partialname: 'johnny' }, // optional
+
+        { /*data*/ }, // optional
+
+        function(xhr) { // optional
+          xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64([$('#username').val(), ':', $('#password').val()].join()));
+        },
+
+        function(error, response) { // required
+          console.log(error || response);
         }
+
       );
       
 # Licence
