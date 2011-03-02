@@ -2,7 +2,7 @@
 # Deeds.js
 Deeds is a very simple client side Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making ajax calls. Currently this uses jQuery to make ajax requests. There are plans to remove the dependency eventually, as well as make it node.js module-capable.
 
-### How Does it work?
+### An example...
 Here is a very trivial example. An application defines several calls to the Middle-end which are grouped by the HTTP verb that they will use.
 
     var deed = new deeds({
@@ -66,7 +66,7 @@ The deeds constructer returns itself, so the `use` function can be chained to it
 `headers` {object} - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` {string} - The protocol to be used for all requests, ie 'http', 'https'.<br/>
 
-### An example of the above code in use...
+And here is the above code in use...
 
     deed.post.users(
 
