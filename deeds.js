@@ -139,10 +139,10 @@
 
         var xhrConf = {
     
-        url:         url,
-        type:        method,
-        data:        data || null,
-        beforeSend:  function(xhr) {
+        url: url,
+        type: method,
+        data: data || null,
+        beforeSend: function(xhr) {
 
           var headers = self.options.headers;
 
