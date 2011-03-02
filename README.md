@@ -36,7 +36,7 @@ The `users` function was generated from its definition in the `get` group. We pa
 
     var deed = new deeds({
       
-      get: { // optional
+      get: {
         users: '/api/users/:partialname',
 
         apps: '/api/apps/:partialname',
@@ -46,17 +46,17 @@ The `users` function was generated from its definition in the `get` group. We pa
         auth: '/api'
       },
       
-      post: { // optional
+      post: {
         users: '/api/users'
       },
       
-      delete: { // optional
+      delete: {
         users: '/api/users/:username'
       }
 
     }).use({
-      port: 8080, // optional 
-      headers: { 'Accept': 'application/json' } // optional
+      port: 8080,
+      headers: { 'Accept': 'application/json' }
     });
 
 The deeds constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
@@ -70,9 +70,9 @@ And here is the above code in use...
 
     deed.post.users(
 
-      { /*data*/ }, // optional
+      { foo: 'data' },
 
-      function(xhr) { // optional
+      function(xhr) {
         xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('user:password'));
       },
 
