@@ -73,27 +73,27 @@
         self.xhr.onreadystatechange = function() {
           
  				  switch (self.xhr.readyState){
-   				  case 1:
-   				  	self.listeners.loading();
-   				  break;
-   				  case 2:
-   				  	self.listeners.loaded();
-   				  break;
-   				  case 3:
-   				  	self.listeners.interactive();
-   				  break;
-   				  case 4:
-   				  	var response = self.xhr.responseText,
-   				  	    status = self.xhr.status,
-   				  	    statusText = self.xhr.statusText;
-
-   						try {
-   						  self.listeners.success(JSON.parse(response), statusText, self.xhr);
-   						}
-   						catch(ex) {
-   						  self.listeners.error(self.xhr, statusText, ex.message);
-   					  }
- 					  break;
+            case 1:
+              self.listeners.loading();
+            break;
+            case 2:
+              self.listeners.loaded();
+            break;
+            case 3:
+              self.listeners.interactive();
+            break;
+            case 4:
+              var response = self.xhr.responseText,
+                status = self.xhr.status,
+                statusText = self.xhr.statusText;
+            
+            	try {
+                self.listeners.success(JSON.parse(response), statusText, self.xhr);
+            	}
+            	catch(ex) {
+                self.listeners.error(self.xhr, statusText, ex.message);
+              }
+            break;
  				  }         
         };
       };
