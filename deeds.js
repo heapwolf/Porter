@@ -4,7 +4,7 @@
 
     var self = this;
 
-    this.data = {};
+    var cache = this.cache = {};
 
     this.options = {
       protocol: 'http',
@@ -16,6 +16,8 @@
       },
       lib: null
     };
+    
+    this.headers = this.options.headers;
 
     this.use = function(options) {
       for (var option in options) {
@@ -37,7 +39,6 @@
        	loading: conf.loading || function() {},
        	loaded: conf.loaded || function() {},
        	interactive: conf.interactive || function() {},
-       	complete: conf.complete || function() {},
        	success: conf.success || function() {},
        	error: conf.error || function() {}
 
@@ -69,7 +70,7 @@
         self.xhr.open(conf.type, conf.url, true);
         self.listeners.beforeSend(self.xhr);
         self.xhr.send(conf.url);
-        
+
         self.xhr.onreadystatechange = function() {
 
           switch (self.xhr.readyState){
@@ -89,7 +90,7 @@
             
             	try {
             	  response = JSON.parse(response);
-            	  self.data[conf.url] = response;
+            	  cache[conf.url] = response;
                 self.listeners.success(response, statusText, self.xhr);
             	}
             	catch(ex) {
@@ -103,8 +104,8 @@
     };
 
     this.clear = function() {
-      for(var d in self.data) {
-        delete self.data[d];
+      for(var d in self.cache) {
+        delete self.cache[d];
       }
     }
 
@@ -127,11 +128,11 @@
       return new RegExp('^' + path + '$', 'i');
     }
 
-    function req(url, method, replace, data, stagingCall, callback) {
+    function req(url, method, replace, data, callback) {
 
       var ajax;
 
-      if(!callback) {
+      if(typeof callback === 'undefined') {
         callback = stagingCall;
       }
 
@@ -151,14 +152,11 @@
               xhr.setRequestHeader(header, headers[header]); 
             }
           }
-  
-          if(stagingCall) {
-            stagingCall(xhr);
-          }
         },
 
         success: function(data, textStatus, XMLHttpRequest) {
-          self.data[url] = data;
+          self.cache[url] = data;
+          console.log(callback)
           callback(null, data, textStatus, XMLHttpRequest);
         },
 
@@ -193,8 +191,8 @@
                     klen = keys.length,
                     key;
                 
-                if(alen === 1) {
-                  return callback(self.data[url]);
+                if(alen === 1 && args[0] === true) {
+                  return args[alen](self.cache[url]);
                 }
                 
                 if (klen > 0) {

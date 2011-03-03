@@ -69,22 +69,21 @@ The deeds constructer returns itself, so the `use` function can be chained to it
 
 And here is the above code in use...
 
+    deed.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
+
     deed.post.users(
 
       { foo: 'data' },
 
-      function(xhr) {
-        xhr.setRequestHeader('authorization', 'Basic ' + encodeBase64('username:password'));
-      },
-
       function(error, response) {
-        
-        console.log(error || response);
-      }
 
+        console.log(error || response);
+
+      }
     );
 
-The `users` function was generated from its definition in the `post` group. We pass it 1) a payload object, 2) a function to dynamically set the headers associated with this particular request, and 3) a callback function for when the request has finished processing.
+The `users` function was generated from its definition in the `post` group. We pass it a payload object, and  callback function for when the request has finished processing. The deed object will also expose the headers collection, this is simply an object literal that contains the
+headers to be used for the request.
       
 # Licence
 
