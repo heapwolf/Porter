@@ -132,7 +132,7 @@
         callback = stagingCall;
       }
 
-      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, request.path, '?callback=?'].join('');
+      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, url, '?callback=?'].join('');
 
       var xhrConf = {
     
@@ -152,11 +152,11 @@
 
         success: function(data, textStatus, XMLHttpRequest) {
           self.cache[url] = data;
-          callback(null, data, textStatus, XMLHttpRequest);
+          callback.call(self, null, data, textStatus, XMLHttpRequest);
         },
 
         error: function(XMLHttpRequest, textStatus, errorThrown){
-          callback([XMLHttpRequest, textStatus, errorThrown], null);
+          callback.call(self, [XMLHttpRequest, textStatus, errorThrown], null);
         }
 
       }
@@ -193,9 +193,6 @@
 
                 if(alen === 1 && args[0] === true) {
                   return args[alen](self.cache[url]);
-                }
-                else if(alen === 1 && klen > 0) {
-                  throw new Error('Not enough arguments provided.')
                 }
 
                 if (klen > 0) {
