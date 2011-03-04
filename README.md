@@ -1,6 +1,6 @@
 
 ![Alt text](https://github.com/hij1nx/RSAN/raw/master/logo.png)<br/>
-RSAN is a REST Service Application Notation. An abstraction meant to reduce the boiler plate code associated with making network requests. RSAN does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
+RSAN stands for REST Service Application Notation. It describes the interface to a REST application. It's a high level abstraction meant to reduce the boiler plate code associated with making REST requests. RSAN does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
 
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
