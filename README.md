@@ -5,7 +5,7 @@ RSAN is a REST Service Application Notation. An abstraction meant to reduce the 
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
 
-    var rson = new RSAN({
+    var app = new RSAN({
 
       users: {
         list: ['get', '/api/users/:partialname'],
@@ -13,56 +13,70 @@ Here is a very trivial example where we define two resources and four methods.
       },
 
       apps: {
-        list: ['get', '/api/apps'],
+        list: ['get', '/api/apps/:username'],
         create: ['post', '/api/apps/:username/:appname']
       }
 
     });
 
-The RSAN constructor takes a single object literal containing members grouped by resource. Each member can have tokens in them that get supplanted when called. Here is our above definition put to use...
+The RSAN constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
 
-    rson.users.list(
+    app.users.list(
 
       { partialname: 'jo' },
 
       function(error, response) {
+        
         console.log(error || response);
       }
 
     );
 
-The `users` function was generated from its definition in the `get` group. We pass it 1) an object literal that supplants the values in the request url and 2) a callback function that will process when the request is done.
+The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
+
+### The same example with validation...
+In most cases you will want to make assertions on the outgoing and incoming data.
+
+    var app = new RSAN({
+
+      users: {
+        list: ['get', '/api/users/:partialname', { out: JSONSchemaA, in: JSONSchemaB }],
+        update: ['post', '/api/apps/:username']
+      },
+
+      apps: {
+        list: ['get', '/api/apps/:username'],
+        create: ['post', '/api/apps/:username/:appname']
+      }
+
+    });    
 
 ### A more complex example...
 
-    var deed = new RSAN({
-      
-      get: {
-        users: '/api/users/:partialname',
+    var app = new RSAN({
 
-        apps: '/api/apps/:partialname',
-        appsBy: '/api/apps/:username',
+      users: {
+        list: ['get', '/api/users/:partialname', { out: JSONSchemaList, in: JSONSchemaB }],
+        update: ['post', '/api/apps/:username', { in: JSONSchemaC }]
+      },
 
-        servers: '/api/servers',
-        auth: '/api'
-      },
-      
-      post: {
-        users: '/api/users'
-      },
-      
-      delete: {
-        users: '/api/users/:username'
+      apps: {
+        list: ['get', '/api/apps/:username', { in: JSONSchemaD }],
+        create: ['post', '/api/apps/:username/:appname', { in: JSONSchemaE }]
       }
 
     }).use({
       port: 8080,
+      in: JSONSchmeaF,
+      out: JSONSchmeaA,
       headers: { 'Accept': 'application/json' }
     });
 
-The RSAN constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
+The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
 
 `port` Number - The port of the server that will accept the requests.<br/>
+`in` Object - A JSONSchema object that will validate against every incoming request.<br/>
+`out` Object - A JSONSchema object that will validate against every outgoing request.<br/>
 `host` String - An IP address of the host server that will accept the requests.<br/>
 `headers` Object - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` String - The protocol to be used for all requests, ie 'http', 'https'.<br/>
@@ -70,21 +84,19 @@ The RSAN constructer returns itself, so the `use` function can be chained to it.
 
 And here is the above code in use...
 
-    deed.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
+    app.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
 
-    deed.post.users(
-
-      { foo: 'data' },
-
+    app.users.update(
+      
+      { partialname: 'johnny' },
+      { address: '555 Mockingbird Ln' },
+      
       function(error, response) {
-
         console.log(error || response);
-
       }
     );
 
-The `users` function was generated from its definition in the `post` group. We pass it a payload object, and  callback function for when the request has finished processing. The deed object will also expose the headers collection, this is simply an object literal that contains the
-headers to be used for the request.
+The `update` function was generated from its definition in the `users` group. We pass it a payload object, some data to replace the url tokens with and a callback function for when the request has finished processing. The app object will also expose the headers collection, this is simply an object literal that contains the headers to be used for the request.
       
 # Licence
 
