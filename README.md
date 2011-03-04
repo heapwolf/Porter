@@ -1,7 +1,5 @@
 
 ![Alt text](https://github.com/hij1nx/RSON/raw/master/logo.png)<br/>
-
-# RSON
 RSON is REST Service Object Notation. An abstraction meant to reduce the boiler plate code associated with making network requests. RSON does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
 
 ### An example...
