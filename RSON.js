@@ -1,9 +1,8 @@
 
 ;(function() { 
-  var deeds = (typeof exports !== "undefined" ? exports : window).deeds = function(verbs) {
+  var RSON = (typeof exports !== "undefined" ? exports : window).RSON = function(resources) {
 
     var self = this;
-
     var cache = this.cache = {};
 
     this.options = {
@@ -16,7 +15,7 @@
       },
       lib: null
     };
-    
+
     this.headers = this.options.headers;
 
     this.use = function(options) {
@@ -25,31 +24,27 @@
           self.options[option] = options[option];
         }
       }
-
       return self;
     };
 
     this.ajax = function(conf) {
 
       var self = this;
-      
+
       this.listeners = {
-         
         beforeSend: conf.beforeSend || function() {},
        	loading: conf.loading || function() {},
        	loaded: conf.loaded || function() {},
        	interactive: conf.interactive || function() {},
        	success: conf.success || function() {},
        	error: conf.error || function() {}
-
       };
 
       this.on = function(event, cb) {
          self.listeners[event] = cb;
-       };
+      };
 
       this.xhr = (function() {
-    
         if(typeof XMLHttpRequest != "undefined") {
           return new XMLHttpRequest();
         }
@@ -65,7 +60,7 @@
           }       
         }
       })();
-     
+
       this.run = function() {
         self.xhr.open(conf.type, conf.url, true);
         self.listeners.beforeSend(self.xhr);
@@ -110,6 +105,7 @@
     }
 
     function normalizePath(path, keys) {
+      // normalizePath by TJ Holowaychuk (https://github.com/visionmedia)
       path = path
         .concat('/?')
         .replace(/\/\(/g, '(?:/')
@@ -136,9 +132,9 @@
         callback = stagingCall;
       }
 
-      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, url, '?callback=?'].join('');
+      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, request.path, '?callback=?'].join('');
 
-        var xhrConf = {
+      var xhrConf = {
     
         url: url,
         type: method,
@@ -148,7 +144,7 @@
           var headers = self.options.headers;
 
           for(var header in headers) {
-            if (verbs.hasOwnProperty(verb)) {
+            if (headers.hasOwnProperty(header)) {
               xhr.setRequestHeader(header, headers[header]); 
             }
           }
@@ -156,7 +152,6 @@
 
         success: function(data, textStatus, XMLHttpRequest) {
           self.cache[url] = data;
-          console.log(callback)
           callback(null, data, textStatus, XMLHttpRequest);
         },
 
@@ -174,50 +169,59 @@
       }
     }
 
-    for (var verb in verbs) {
-      if (verbs.hasOwnProperty(verb)) {
-        if(!self[verb]) {
-          self[verb] = {};
+    for (var resource in resources) {
+      if (resources.hasOwnProperty(resource)) {
+        if(!self[resource]) {
+          self[resource] = {};
         }
-        for (var request in verbs[verb]) {
-          if (verbs[verb].hasOwnProperty(request)) {
-            self[verb][request] = (function(url, method) {
+        for (var request in resources[resource]) {
+          if (resources[resource].hasOwnProperty(request)) {
+            
+            self[resource][request] = (function(request) {
+
               var keys = [],
+                  method = request.shift(),              
+                  url = request.shift(),
                   matcher = normalizePath(url, keys);
-          
+
               return function() {
+                
                 var args = Array.prototype.slice.call(arguments),
                     alen = args.length,
                     klen = keys.length,
-                    key;
-                
+                    key;                                    
+
                 if(alen === 1 && args[0] === true) {
                   return args[alen](self.cache[url]);
                 }
-                
+                else if(alen === 1 && klen > 0) {
+                  throw new Error('Not enough arguments provided.')
+                }
+
                 if (klen > 0) {
-              
+
                   // If we have keys, then we need at least two arguments
                   // and first argument in a two-argument pair can be assumed
                   // to be the replacement map.
+                  
                   if (alen < 2) {
                     throw new Error('Cannot execute request ' + request + ' without replacement map');
                   }
                   else if (alen === 2) {
                     args.splice(1, -1, null);
                   }
-              
+
                   if (typeof args[0] === 'string') {
                     if (klen > 1) {
                       throw new Error('Wrong number of keys in replacement. Expected ' + klen + ' got 1.');
                     }
-                
+
                     key = keys[0];
                     url = url.replace(':' + key, args[0]);
 
                   }
                   else {
-                                  
+
                     while (klen--) {
                       key = keys[klen];
                       url = url.replace(':' + key, args[0][key]);
@@ -226,28 +230,30 @@
                   }
                 }
                 else {
+
                   // If we don't have keys, then we need at least one argument
                   // and the first argument in a two-argument pair can be assumed
                   // to be the data for the request.
+
                   if (alen < 1 || alen > 2) {
                     throw new Error('Cannot execute request ' + request + ' with ' + alen + ' arguments.');
                   }
                   else if (alen === 1) {
                     args.splice(0, -1, null);
                   }
-              
+
                   args.splice(0, -1, null);
                 }
-            
+
                 args = [url, method].concat(args);
                 req.apply(null, args);
               }
-            })(verbs[verb][request], verb);
+            })(resources[resource][request]);
+
           }
         }
       }
     }
-
     return self;
   }
 

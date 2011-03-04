@@ -1,28 +1,31 @@
 
-# deeds.js
-deeds is a very easy to use, portable Data Access Layer. An abstraction meant to reduce the boiler plate code associated with making network requests. deeds does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
+![Alt text](https://github.com/hij1nx/RSON/raw/master/logo.png)<br/>
+
+# RSON
+RSON is REST Service Object Notation. An abstraction meant to reduce the boiler plate code associated with making network requests. RSON does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
 
 ### An example...
-Here is a very trivial example where we define two GETs and a POST.
+Here is a very trivial example where we define two resources and four methods.
 
-    var deed = new deeds({
-      
-      get: {
-        users: '/api/users/:partialname',
-        apps: '/api/apps/'
+    var rson = new RSON({
+
+      users: {
+        list: ['get', '/api/users/:partialname'],
+        update: ['post', '/api/apps/:username']
       },
-      
-      post: {
-        users: '/api/users'
+
+      apps: {
+        list: ['get', '/api/apps'],
+        create: ['post', '/api/apps/:username/:appname']
       }
-      
+
     });
 
-The deeds constructor takes a single object literal containing paths grouped by the HTTP verb that they will use. The paths can have tokens in them that get supplanted when called. Here is our above definition put to use...
+The RSON constructor takes a single object literal containing members grouped by resource. Each member can have tokens in them that get supplanted when called. Here is our above definition put to use...
 
-    deed.get.users(
+    rson.users.list(
 
-      { partialname: 'johnny' },
+      { partialname: 'jo' },
 
       function(error, response) {
         console.log(error || response);
@@ -34,7 +37,7 @@ The `users` function was generated from its definition in the `get` group. We pa
 
 ### A more complex example...
 
-    var deed = new deeds({
+    var deed = new RSON({
       
       get: {
         users: '/api/users/:partialname',
@@ -59,7 +62,7 @@ The `users` function was generated from its definition in the `get` group. We pa
       headers: { 'Accept': 'application/json' }
     });
 
-The deeds constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
+The RSON constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
 
 `port` Number - The port of the server that will accept the requests.<br/>
 `host` String - An IP address of the host server that will accept the requests.<br/>
