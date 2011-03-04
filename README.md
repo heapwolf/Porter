@@ -1,11 +1,11 @@
 
-![Alt text](https://github.com/hij1nx/RSON/raw/master/logo.png)<br/>
-RSON is REST Service Object Notation. An abstraction meant to reduce the boiler plate code associated with making network requests. RSON does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
+![Alt text](https://github.com/hij1nx/RSAN/raw/master/logo.png)<br/>
+RSAN is a REST Service Application Notation. An abstraction meant to reduce the boiler plate code associated with making network requests. RSAN does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
 
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
 
-    var rson = new RSON({
+    var rson = new RSAN({
 
       users: {
         list: ['get', '/api/users/:partialname'],
@@ -19,7 +19,7 @@ Here is a very trivial example where we define two resources and four methods.
 
     });
 
-The RSON constructor takes a single object literal containing members grouped by resource. Each member can have tokens in them that get supplanted when called. Here is our above definition put to use...
+The RSAN constructor takes a single object literal containing members grouped by resource. Each member can have tokens in them that get supplanted when called. Here is our above definition put to use...
 
     rson.users.list(
 
@@ -35,7 +35,7 @@ The `users` function was generated from its definition in the `get` group. We pa
 
 ### A more complex example...
 
-    var deed = new RSON({
+    var deed = new RSAN({
       
       get: {
         users: '/api/users/:partialname',
@@ -60,7 +60,7 @@ The `users` function was generated from its definition in the `get` group. We pa
       headers: { 'Accept': 'application/json' }
     });
 
-The RSON constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
+The RSAN constructer returns itself, so the `use` function can be chained to it. The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
 
 `port` Number - The port of the server that will accept the requests.<br/>
 `host` String - An IP address of the host server that will accept the requests.<br/>
