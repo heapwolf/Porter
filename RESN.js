@@ -1,4 +1,7 @@
 
+// MIT License
+// Copyright (c) 2011 hij1nx http://www.twitter.com/hij1nx & Charlie Robbins http://www.twitter.com/indexzero
+
 ;(function() { 
   var RESN = (typeof exports !== "undefined" ? exports : window).RESN = function(resources) {
 
