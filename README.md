@@ -1,11 +1,11 @@
 
-![Alt text](https://github.com/hij1nx/RSAN/raw/master/logo.png)<br/>
-RSAN stands for REST Service Application Notation. It describes the interface to a REST application. It provides high level abstraction by building methods based on the definitions provided. RSAN does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
+![Alt text](https://github.com/hij1nx/RESN/raw/master/logo.png)<br/>
+RESN stands for REST Service Application Notation. It describes the interface to a REST application. It provides high level abstraction by building methods based on the definitions provided. RESN does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
 
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
 
-    var app = new RSAN({
+    var app = new RESN({
 
       users: {
         list: ['get', '/api/users/:partialname'],
@@ -19,7 +19,7 @@ Here is a very trivial example where we define two resources and four methods.
 
     });
 
-The RSAN constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
+The RESN constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
 
     app.users.list(
 
@@ -37,7 +37,7 @@ The `list` function was generated from its definition in the `users` group. We p
 ### The same example with validation...
 In most cases you will want to make assertions on the outgoing and incoming data.
 
-    var app = new RSAN({
+    var app = new RESN({
 
       users: {
         list: ['get', '/api/users/:partialname', { out: JSONSchemaA, in: JSONSchemaB }],
@@ -53,7 +53,7 @@ In most cases you will want to make assertions on the outgoing and incoming data
 
 ### A more complex example...
 
-    var app = new RSAN({
+    var app = new RESN({
 
       users: {
         list: ['get', '/api/users/:partialname', { out: JSONSchemaList, in: JSONSchemaB }],
