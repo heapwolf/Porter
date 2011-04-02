@@ -1,7 +1,4 @@
 
-// MIT License
-// Copyright (c) 2011 hij1nx http://www.twitter.com/hij1nx & Charlie Robbins http://www.twitter.com/indexzero
-
 ;(function() { 
   var RESN = (typeof exports !== "undefined" ? exports : window).RESN = function(resources) {
 
@@ -65,9 +62,17 @@
       })();
 
       this.run = function() {
+        
+        self.xhr.abort();
         self.xhr.open(conf.type, conf.url, true);
         self.listeners.beforeSend(self.xhr);
-        self.xhr.send(conf.url);
+
+        try {
+          self.xhr.send(JSON.stringify(conf.data));
+        }
+        catch(ex) {
+          self.xhr.send();
+        }
 
         self.xhr.onreadystatechange = function() {
 
@@ -82,18 +87,19 @@
               self.listeners.interactive();
             break;
             case 4:
-              var response = self.xhr.responseText,
-                status = self.xhr.status,
-                statusText = self.xhr.statusText;
-            
-            	try {
-            	  response = JSON.parse(response);
-            	  cache[conf.url] = response;
-                self.listeners.success(response, statusText, self.xhr);
-            	}
-            	catch(ex) {
-                self.listeners.error(self.xhr, statusText, ex.message);
+              var response = self.xhr.responseText.trim(),
+                  status = self.xhr.status,
+                  statusText = self.xhr.statusText;
+
+            	if(~~status == 200) {
+                response = JSON.parse(response);
+              	self.listeners.success(response, statusText, self.xhr);
+                cache[conf.url] = response;              	
               }
+              else {
+                self.listeners.error(self.xhr, statusText, status);                
+              }
+
             break;
           }         
         };
@@ -131,17 +137,13 @@
 
       var ajax;
 
-      if(typeof callback === 'undefined') {
-        callback = stagingCall;
-      }
-
-      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, url, '?callback=?'].join('');
+      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, url].join('');
 
       var xhrConf = {
-    
+
         url: url,
         type: method,
-        data: data || null,
+        data: data || {},
         beforeSend: function(xhr) {
 
           var headers = self.options.headers;
@@ -155,15 +157,14 @@
 
         success: function(data, textStatus, XMLHttpRequest) {
           self.cache[url] = data;
-          callback.call(self, null, data, textStatus, XMLHttpRequest);
+          callback.call(self, null, data);
         },
 
-        error: function(XMLHttpRequest, textStatus, errorThrown){
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
           callback.call(self, [XMLHttpRequest, textStatus, errorThrown], null);
         }
 
       }
-
       if(window) {
         ajax = self.options.lib ? self.options.lib(xhrConf) : new self.ajax(xhrConf).run();
       }
@@ -172,42 +173,48 @@
       }
     }
 
-    for (var resource in resources) {
-      if (resources.hasOwnProperty(resource)) {
-        if(!self[resource]) {
-          self[resource] = {};
-        }
-        for (var request in resources[resource]) {
-          if (resources[resource].hasOwnProperty(request)) {
-            
-            self[resource][request] = (function(request) {
+    function buildResources(resources, ns) {
+      for (var resource in resources) {
+        if (resources.hasOwnProperty(resource)) {
+          
+          if(Object.prototype.toString.call(resources[resource]) == "[object Array]") {
 
-              var keys = [],
-                  method = request.shift(),              
-                  url = request.shift(),
-                  matcher = normalizePath(url, keys);
+            ns[resource] = (function(request) {
 
               return function() {
-                
-                var args = Array.prototype.slice.call(arguments),
+
+                var keys = [],
+                    tmp = [],
+                    method = tmp[0] = request[0],
+                    url = tmp[1] = request[1];
+                    matcher = normalizePath(url, keys),
+
+                    args = Array.prototype.slice.call(arguments),
                     alen = args.length,
                     klen = keys.length,
-                    key;                                    
+                    key = null;
 
                 if(alen === 1 && args[0] === true) {
                   return args[alen](self.cache[url]);
                 }
+                
+                url = url.replace(/{([^{}]*)}/g, function (a, b) {
+                  var r = args[0][b];
+                  return typeof r === 'string' || typeof r === 'number' ? escape(r) : a;
+                });                
 
                 if (klen > 0) {
 
                   // If we have keys, then we need at least two arguments
                   // and first argument in a two-argument pair can be assumed
                   // to be the replacement map.
+
+                  if (alen === 1) {
+                    args.splice(0, -1, null);
+                    args.splice(0, -1, null);
+                  } 
                   
-                  if (alen < 2) {
-                    throw new Error('Cannot execute request ' + request + ' without replacement map');
-                  }
-                  else if (alen === 2) {
+                  if (alen === 2) {
                     args.splice(1, -1, null);
                   }
 
@@ -224,13 +231,14 @@
 
                     while (klen--) {
                       key = keys[klen];
-                      url = url.replace(':' + key, args[0][key]);
+                      var val = args && args[0] ? args[0][key] : '', 
+                          replace = (val === '') ? new RegExp('/?:' + key) : ':' + key;
+                      url = url.replace(replace, val);
 
                     }
                   }
                 }
                 else {
-
                   // If we don't have keys, then we need at least one argument
                   // and the first argument in a two-argument pair can be assumed
                   // to be the data for the request.
@@ -248,12 +256,21 @@
                 args = [url, method].concat(args);
                 req.apply(null, args);
               }
-            })(resources[resource][request]);
+            })(resources[resource]);
 
           }
+          else {
+            if(!ns[resource]) {
+              ns[resource] = {};
+            }
+            buildResources(resources[resource], ns[resource]);
+          }
         }
-      }
+      }      
     }
+    
+    buildResources(resources, self);
+
     return self;
   }
 
