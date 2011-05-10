@@ -1,6 +1,11 @@
 
 ![Alt text](https://github.com/hij1nx/RESN/raw/master/logo.png)<br/>
-RESN stands for REst Service Notation. It is a JSON based description format for REST interfaces, as well as an engine that will generate the methods needed to access those services based on the description given. It provides validation for incoming and outgoing data using JSONSchema. RESN does not use any 3rd party ajax libraries to run in the client, but can. ***NOT RUNNING IN NODE RIGHT NOW***
+
+## What
+
+RESN stands for REst Service Notation. It is a JSON based description format for REST interfaces, it will generate methods needed to access services based on the description given. It provides validation for incoming and outgoing data. RESN does not use any 3rd party ajax libraries to run in the client.
+
+## How
 
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
@@ -108,12 +113,13 @@ And here is the above code in use...
 
 The `update` function was generated from its definition in the `users` group. We pass it a payload object, some data to replace the url tokens with and a callback function for when the request has finished processing. The app object will also expose the headers collection, this is simply an object literal that contains the headers to be used for the request.
       
-# Credits
+## Credits
 
 Author: hij1nx
+
 Contributors: indexzero, tmpvar
 
-# Licence
+## Licence
 
 (The MIT License)
 
