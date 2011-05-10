@@ -5,6 +5,7 @@ RESN stands for REst Service Notation. It is a JSON based description format for
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
 
+```javascript
     var app = new RESN({
 
       users: {
@@ -18,9 +19,11 @@ Here is a very trivial example where we define two resources and four methods.
       }
 
     });
+```
 
 The RESN constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
 
+```javascript
     app.users.list(
 
       { partialname: 'jo' },
@@ -31,12 +34,14 @@ The RESN constructor takes a single object literal containing members grouped by
       }
 
     );
+```
 
 The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
 
 ### The same example with validation...
 In most cases you will want to make assertions on the outgoing and incoming data.
 
+```javascript
     var app = new RESN({
 
       users: {
@@ -49,10 +54,12 @@ In most cases you will want to make assertions on the outgoing and incoming data
         create: ['post', '/api/apps/:username/:appname']
       }
 
-    });    
+    });
+```
 
 ### A more complex example...
 
+```javascript
     var app = new RESN({
 
       users: {
@@ -71,6 +78,7 @@ In most cases you will want to make assertions on the outgoing and incoming data
       out: JSONSchmeaA,
       headers: { 'Accept': 'application/json' }
     });
+```
 
 The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
 
@@ -84,6 +92,7 @@ The `use` function sets the defaults for all calls that get made. It accepts an 
 
 And here is the above code in use...
 
+```javascript
     app.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
 
     app.users.update(
@@ -95,14 +104,20 @@ And here is the above code in use...
         console.log(error || response);
       }
     );
+```
 
 The `update` function was generated from its definition in the `users` group. We pass it a payload object, some data to replace the url tokens with and a callback function for when the request has finished processing. The app object will also expose the headers collection, this is simply an object literal that contains the headers to be used for the request.
       
+# Credits
+
+Author: hij1nx
+Contributors: indexzero, tmpvar
+
 # Licence
 
 (The MIT License)
 
-Copyright (c) 2011 hij1nx <http://www.twitter.com/hij1nx> & Charlie Robbins <http://www.twitter.com/indexzero>
+Copyright (c) 2011 hij1nx <http://www.twitter.com/hij1nx>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
