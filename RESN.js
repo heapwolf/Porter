@@ -7,16 +7,40 @@
 
     this.options = {
       protocol: 'http',
-      ip: '127.0.0.1',
-      port: 80,
+      ip: window.location.hostname,
+      host: window.location.hostname,
+      port: window.location.port === '' ? 80 : window.location.port,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      },
-      lib: null
+      }
     };
+    
+    function isJSON(str) {
+      if (str.length == 0) return false;
+      str = str.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@');
+      str = str.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+      str = str.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+      return (/^[\],:{}\s]*$/).test(str);
+    }    
 
     this.headers = this.options.headers;
+
+    this._listeners = {
+     	'loading': function() {},
+     	'loaded': function() {},
+     	'interactive': function() {},
+     	'default': function() {}
+    };
+
+    this.on = function(listeners) {
+      for (var listener in listeners) {
+        if (listeners.hasOwnProperty(listener)) {
+          self._listeners[listener] = listeners[listener];
+        }
+      }
+      return self;
+    };
 
     this.use = function(options) {
       for (var option in options) {
@@ -29,22 +53,10 @@
 
     this.ajax = function(conf) {
 
-      var self = this;
+      var ajax = this;
+      ajax._listeners = {};
 
-      this.listeners = {
-        beforeSend: conf.beforeSend || function() {},
-       	loading: conf.loading || function() {},
-       	loaded: conf.loaded || function() {},
-       	interactive: conf.interactive || function() {},
-       	success: conf.success || function() {},
-       	error: conf.error || function() {}
-      };
-
-      this.on = function(event, cb) {
-         self.listeners[event] = cb;
-      };
-
-      this.xhr = (function() {
+      ajax.xhr = (function() {
         if(typeof XMLHttpRequest != "undefined") {
           return new XMLHttpRequest();
         }
@@ -55,53 +67,88 @@
             try {
               return new ActiveXObject("Microsoft.XMLHTTP");
             } catch (err) {
-              throw new Error('Don\'t bother useing the internet.');
+              throw new Error('Browser too old.');
             }
-          }       
+          }
         }
       })();
 
-      this.run = function() {
+      ajax.run = function(callbacks) {
         
-        self.xhr.abort();
-        self.xhr.open(conf.type, conf.url, true);
-        self.listeners.beforeSend(self.xhr);
-
-        try {
-          self.xhr.send(JSON.stringify(conf.data));
-        }
-        catch(ex) {
-          self.xhr.send();
+        // merge the global _listeners into this xhr.
+        for(l in self._listeners) {
+          if(self._listeners.hasOwnProperty(l)) {
+            ajax._listeners[l] = self._listeners[l];
+          }
         }
 
-        self.xhr.onreadystatechange = function() {
+        // is callbacks actually plural? if so, merge.
+        if(!(typeof callbacks === 'function')) {
+          for(c in callbacks) {
+            if(callbacks.hasOwnProperty(c)) {
+              ajax._listeners[c] = callbacks[c];
+            }
+          }
+        }
+        else {
+          ajax._listeners['default'] = callbacks;
+        }
 
-          switch (self.xhr.readyState){
+        ajax.xhr.open(conf.type, conf.url, true);
+
+        var headers = self.options.headers;
+
+        // pull from the default headers.
+        for(var header in headers) {
+          if (headers.hasOwnProperty(header)) {
+            ajax.xhr.setRequestHeader(header, headers[header]); 
+          }
+        }
+
+        if(conf.data) {
+          try { ajax.xhr.send(JSON.stringify(conf.data)); }
+          catch(ex) { ajax._listeners['default'](ex, null, null, null); }
+        }
+        else {
+          ajax.xhr.send();
+        }
+
+        ajax.xhr.onreadystatechange = function() {
+
+          switch (ajax.xhr.readyState){
             case 1:
-              self.listeners.loading();
+              ajax._listeners.loading();
             break;
             case 2:
-              self.listeners.loaded();
+              ajax._listeners.loaded();
             break;
             case 3:
-              self.listeners.interactive();
+              ajax._listeners.interactive();
             break;
             case 4:
-              var response = self.xhr.responseText.trim(),
-                  status = self.xhr.status,
-                  statusText = self.xhr.statusText;
 
-            	if(~~status == 200) {
-                response = JSON.parse(response);
-              	self.listeners.success(response, statusText, self.xhr);
-                cache[conf.url] = response;              	
+              var response = ajax.xhr.responseText.trim(),
+                  status = ajax.xhr.status,
+                  statusText = ajax.xhr.statusText;
+
+              try {
+                response = isJSON(response) ? JSON.parse(response) : response;
               }
-              else {
-                self.listeners.error(self.xhr, statusText, status);                
+              catch(ex) {
+                ajax._listeners['default'](ex, null, null, null);
               }
+
+              if(ajax._listeners[status]) {
+                ajax._listeners[status](null, response, statusText, self.xhr);
+              }
+              else if(ajax._listeners['default']) {
+                ajax._listeners['default'](null, response, statusText, self.xhr);
+              }
+
+              cache[conf.url] = response;
 
             break;
-          }         
+          }
         };
       };
       return this;
@@ -133,43 +180,22 @@
       return new RegExp('^' + path + '$', 'i');
     }
 
-    function req(url, method, replace, data, callback) {
+    function req(url, method, replace, data, callbacks) {
 
-      var ajax;
-
-      url = [self.options.protocol, '://', self.options.ip, ':', self.options.port, url].join('');
-
-      var xhrConf = {
-
-        url: url,
-        type: method,
-        data: data || {},
-        beforeSend: function(xhr) {
-
-          var headers = self.options.headers;
-
-          for(var header in headers) {
-            if (headers.hasOwnProperty(header)) {
-              xhr.setRequestHeader(header, headers[header]); 
-            }
-          }
-        },
-
-        success: function(data, textStatus, XMLHttpRequest) {
-          self.cache[url] = data;
-          callback.call(self, null, data);
-        },
-
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-          callback.call(self, [XMLHttpRequest, textStatus, errorThrown], null);
-        }
-
-      }
       if(window) {
-        ajax = self.options.lib ? self.options.lib(xhrConf) : new self.ajax(xhrConf).run();
+        return new self.ajax({
+
+          // merege in the options and build the url to request.
+          url: [self.options.protocol, '://', self.options.ip || self.options.host, ':', self.options.port, url].join(''),
+          type: method,
+          data: data || {}
+
+        }).run(callbacks);
       }
       else {
+        
         // nodejs
+        
       }
     }
 
