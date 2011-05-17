@@ -1,6 +1,6 @@
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/logo.png)<br/>
 
-### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It will balance your code's signal to noise ratio by simplifying the communication interface.
+### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It will balance your code's signal to noise ratio by simplifying the communication interfaces.
 
 ```javascript
 var porter = Porter({
@@ -34,7 +34,7 @@ porter.users.list(
 
 The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
 
-### Adding validation, and a more complex resource organization...
+### Adding inbound and outbound data validation, and more complex resource organization...
 
 ```javascript
 function hasData(data) { // a simple data validator.
@@ -91,7 +91,7 @@ The `use` function sets the defaults for all calls that get made. It accepts an 
 `host` String - An IP address of the host server that will accept the requests.<br/>
 `headers` Object - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` String - The protocol to be used for all requests, ie 'http', 'https'.<br/>
-`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library * ***add this back!*** *.<br/>
+`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library ****add this back!****.<br/>
 
 And here is the above code in use...
 
