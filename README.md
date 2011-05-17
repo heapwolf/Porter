@@ -2,18 +2,12 @@
 
 ## What
 
-porter is a lightweight, resourced oriented, abstraction layer for REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration.
+porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration.
 
-## How
-
-// to-do...
-
-### Usage
-
-// to-do...
+*This is a work in progress.*
 
 ### An example...
-Here is a very trivial example where we define two resources and four methods.
+Define some resources and methods.
 
 ```javascript
     var io = Porter({
@@ -31,7 +25,7 @@ Here is a very trivial example where we define two resources and four methods.
     });
 ```
 
-The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
+The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there must be a verb and a path, where each path can have tokens in it that will get supplanted when used. An RPC call is simply a function name. Here is the above definition put in use...
 
 ```javascript
     app.users.list(
@@ -48,38 +42,46 @@ The Porter constructor takes a single object literal containing members grouped 
 
 The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
 
-### The same example with validation...
+### Adding validation, and a more complex resource organization...
 In most cases you will want to make assertions on the outgoing and incoming data.
 
 ```javascript
+
+    function hasData(data) { // a simple data validator.
+      if(typeof data !== 'undefined') {
+        return true;
+      }
+    }
+
     var app = Porter({
 
-      users: {
-        list: ['get', '/api/users/:partialname', { out: fn1, in: fn2 }],
-        update: ['post', '/api/apps/:username']
-      },
+      admin: {
+        users: {
+          list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
+          update: ['post', '/api/apps/:username']
+        },
 
-      apps: {
-        list: ['get', '/api/apps/:username'],
-        create: ['post', '/api/apps/:username/:appname']
+        apps: {
+          list: ['get', '/api/apps/:username'],
+          create: ['post', '/api/apps/:username/:appname']
+        }
       }
-
     });
 ```
 
-### A more complex example...
+### Specifying settings that apply to all calls that get made...
 
 ```javascript
     var app = Porter({
 
       users: {
-        list: ['get', '/api/users/:partialname', { out: fn1, in: fn2 }],
-        update: ['post', '/api/apps/:username', { in: fn2 }]
+        list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
+        update: ['post', '/api/apps/:username', { in: hasData }]
       },
 
       apps: {
-        list: ['get', '/api/apps/:username', { in: fn1 }],
-        create: ['post', '/api/apps/:username/:appname', { in: fn1 }]
+        list: ['get', '/api/apps/:username', { in: hasData }],
+        create: ['post', '/api/apps/:username/:appname', { in: hasData }]
       }
 
     }).use({
@@ -98,7 +100,7 @@ The `use` function sets the defaults for all calls that get made. It accepts an 
 `host` String - An IP address of the host server that will accept the requests.<br/>
 `headers` Object - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` String - The protocol to be used for all requests, ie 'http', 'https'.<br/>
-`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library.<br/>
+`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library *add this back!*.<br/>
 
 And here is the above code in use...
 
@@ -122,7 +124,7 @@ The `update` function was generated from its definition in the `users` group. We
 
 Author: hij1nx
 
-Contributors: indexzero, tmpvar, marak
+Contributors: indexzero, marak
 
 ## Licence
 
