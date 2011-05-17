@@ -119,7 +119,11 @@ And here is the above code in use...
 ```
 
 The `update` function was generated from its definition in the `users` group. We pass it a payload object, some data to replace the url tokens with and a callback function for when the request has finished processing. The app object will also expose the headers collection, this is simply an object literal that contains the headers to be used for the request.
-      
+
+Porter has a test suite that uses nodeunit. You may find this a useful starting point for your own test suite.
+![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/test.png)<br/>
+
+
 ## Credits
 
 Author: hij1nx
