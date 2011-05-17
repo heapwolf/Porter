@@ -34,7 +34,7 @@ porter.users.list(
 
 The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
 
-### Adding inbound and outbound data validation, and more complex resource organization...
+### Adding inbound and outbound data validation, and more complex resource organization.
 
 ```javascript
 function hasData(data) { // a simple data validator.
@@ -60,7 +60,7 @@ var porter = Porter({
 ```
 Any arbitrary function can be applied to assert the inbound and outbound data of a request, as seen above. If a validating function returns anything other than true, it is considered invalid and the callback for the resource will will have its 'error' parameter populated with either the exception or the return value of the validator.
 
-### Specifying settings that apply to all calls that get made...
+### Specifying settings that apply to all calls that get made.
 
 ```javascript
 var porter = Porter({
@@ -151,6 +151,8 @@ porter.users.update(
   }
 );
 ```
+
+### Testing and debugging.
 
 Porter provides a simple Node.js server to complement it's test suite. You may find this a useful starting point for your own test suite.
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/test.png)<br/>
