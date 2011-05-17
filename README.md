@@ -35,7 +35,6 @@ porter.users.list(
 The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
 
 ### Adding validation, and a more complex resource organization...
-In most cases you will want to make assertions on the outgoing and incoming data.
 
 ```javascript
 function hasData(data) { // a simple data validator.
@@ -59,6 +58,7 @@ var porter = Porter({
   }
 });
 ```
+Any arbitrary function can be applied to assert the inbound and outbound data of a request, as seen above. If a validating function returns anything other than true, it is considered invalid and the callback for the resource will will have its 'error' parameter populated with either the exception or the return value of the validator.
 
 ### Specifying settings that apply to all calls that get made...
 
