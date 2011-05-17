@@ -1,6 +1,6 @@
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/logo.png)<br/>
 
-### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It balances your code's signal to noise ratio for communicating with a server. *This is a work in progress.*
+### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It will balance your code's signal to noise ratio by simplifying the communication interface.
 
 ```javascript
     var porter = Porter({
@@ -23,7 +23,7 @@ The Porter constructor takes a single object literal containing members grouped 
 ```javascript
     porter.users.list(
 
-      { partialname: 'jo' },
+      { partialname: 'bill' },
 
       function(error, response) {
         
@@ -102,7 +102,7 @@ And here is the above code in use...
 
     porter.users.update(
       
-      { partialname: 'johnny' },
+      { partialname: 'bill' },
       { address: '555 Mockingbird Ln' },
       
       function(error, response) {
@@ -112,6 +112,49 @@ And here is the above code in use...
 ```
 
 The `update` function was generated from its definition in the `users` group. We pass it a payload object, some data to replace the url tokens with and a callback function for when the request has finished processing. The app object will also expose the headers collection, this is simply an object literal that contains the headers to be used for the request.
+
+### Specifying what to do with the response.
+
+```javascript
+    var porter = Porter({
+
+      users: {
+        list: ['get', '/api/users/:partialname']
+      }
+
+    }).use({
+      port: 8080,
+      host: 'google.com'
+    }).on({
+      '500': function(err, response) {
+        // do something...
+      },
+      '404': function(err, response) {
+        // do something...
+      }
+    });
+```
+
+In a lot of cases you'll want to handle http responses based on their response code. using the `on` method will allow you to associate methods with these response codes. In some cases you'll want to explicitly override these http response code handlers. you can do this by replacing the regular callback method with an object literal containing the items to overwrite.
+
+```javascript
+    porter.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
+
+    porter.users.update(
+      
+      { partialname: 'bill' },
+      { address: '555 Mockingbird Ln' },
+      
+      {
+        '404': function(err, response) {
+          // do something...
+        },
+        '500': function(err, response) {
+          // do something...
+        }
+      }
+    );
+```
 
 Porter provides a simple Node.js server to complement it's test suite. You may find this a useful starting point for your own test suite.
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/test.png)<br/>
