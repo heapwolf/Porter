@@ -1,6 +1,6 @@
 
 this.restSuite = {
-    'another test': function (test) {
+    'POST to ': function (test) {
         setTimeout(function () {
             // lots of assertions
             test.ok(true, 'everythings ok');
