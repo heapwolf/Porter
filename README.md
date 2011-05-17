@@ -1,4 +1,4 @@
-![Alt text](https://github.com/hij1nx/RESN/raw/master/logo.png)<br/>
+![Alt text](https://github.com/hij1nx/Porter/raw/master/logo.png)<br/>
 
 ## What
 
