@@ -1,7 +1,5 @@
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/logo.png)<br/>
 
-## What
-
 ### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It balances your code's signal to noise ratio for communicating with a server. *This is a work in progress.*
 
 ```javascript
