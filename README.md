@@ -10,7 +10,7 @@ porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and
 Define some resources and methods.
 
 ```javascript
-    var io = Porter({
+    var porter = Porter({
 
       users: {
         list: ['get', '/api/users/:partialname'],
@@ -28,7 +28,7 @@ Define some resources and methods.
 The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there must be a verb and a path, where each path can have tokens in it that will get supplanted when used. An RPC call is simply a function name. Here is the above definition put in use...
 
 ```javascript
-    app.users.list(
+    porter.users.list(
 
       { partialname: 'jo' },
 
@@ -53,7 +53,7 @@ In most cases you will want to make assertions on the outgoing and incoming data
       }
     }
 
-    var app = Porter({
+    var porter = Porter({
 
       admin: {
         users: {
@@ -72,7 +72,7 @@ In most cases you will want to make assertions on the outgoing and incoming data
 ### Specifying settings that apply to all calls that get made...
 
 ```javascript
-    var app = Porter({
+    var porter = Porter({
 
       users: {
         list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
@@ -105,9 +105,9 @@ The `use` function sets the defaults for all calls that get made. It accepts an 
 And here is the above code in use...
 
 ```javascript
-    app.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
+    porter.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
 
-    app.users.update(
+    porter.users.update(
       
       { partialname: 'johnny' },
       { address: '555 Mockingbird Ln' },
