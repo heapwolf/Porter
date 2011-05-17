@@ -1,17 +1,23 @@
 
-![Alt text](https://github.com/hij1nx/RESN/raw/master/logo.png)<br/>
+![Alt text](https://github.com/hij1nx/Porter/raw/master/logo.png)<br/>
 
 ## What
 
-RESN stands for REst Service Notation. It is a JSON based description format for REST interfaces, it will generate methods needed to access services based on the description given. It provides validation for incoming and outgoing data. RESN does not use any 3rd party ajax libraries to run in the client.
+porter is a lightweight, resourced oriented, abstraction layer for REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration.
 
 ## How
+
+// to-do...
+
+### Usage
+
+// to-do...
 
 ### An example...
 Here is a very trivial example where we define two resources and four methods.
 
 ```javascript
-    var app = new RESN({
+    var io = Porter({
 
       users: {
         list: ['get', '/api/users/:partialname'],
@@ -26,7 +32,7 @@ Here is a very trivial example where we define two resources and four methods.
     });
 ```
 
-The RESN constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
+The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the simplest case, there must be a verb and a path. Each path can have tokens in it that will get supplanted when called. Here is our above definition put to use...
 
 ```javascript
     app.users.list(
@@ -47,10 +53,10 @@ The `list` function was generated from its definition in the `users` group. We p
 In most cases you will want to make assertions on the outgoing and incoming data.
 
 ```javascript
-    var app = new RESN({
+    var app = Porter({
 
       users: {
-        list: ['get', '/api/users/:partialname', { out: JSONSchemaA, in: JSONSchemaB }],
+        list: ['get', '/api/users/:partialname', { out: fn1, in: fn2 }],
         update: ['post', '/api/apps/:username']
       },
 
@@ -65,22 +71,22 @@ In most cases you will want to make assertions on the outgoing and incoming data
 ### A more complex example...
 
 ```javascript
-    var app = new RESN({
+    var app = Porter({
 
       users: {
-        list: ['get', '/api/users/:partialname', { out: JSONSchemaList, in: JSONSchemaB }],
-        update: ['post', '/api/apps/:username', { in: JSONSchemaC }]
+        list: ['get', '/api/users/:partialname', { out: fn1, in: fn2 }],
+        update: ['post', '/api/apps/:username', { in: fn2 }]
       },
 
       apps: {
-        list: ['get', '/api/apps/:username', { in: JSONSchemaD }],
-        create: ['post', '/api/apps/:username/:appname', { in: JSONSchemaE }]
+        list: ['get', '/api/apps/:username', { in: fn1 }],
+        create: ['post', '/api/apps/:username/:appname', { in: fn1 }]
       }
 
     }).use({
       port: 8080,
-      in: JSONSchmeaF,
-      out: JSONSchmeaA,
+      in: fn1,
+      out: fn2,
       headers: { 'Accept': 'application/json' }
     });
 ```
@@ -117,7 +123,7 @@ The `update` function was generated from its definition in the `users` group. We
 
 Author: hij1nx
 
-Contributors: indexzero, tmpvar
+Contributors: indexzero, tmpvar, marak
 
 ## Licence
 
