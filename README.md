@@ -3,34 +3,33 @@
 ### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It will balance your code's signal to noise ratio by simplifying the communication interface.
 
 ```javascript
-    var porter = Porter({
+var porter = Porter({
 
-      users: {
-        list: ['get', '/api/users/:partialname'],
-        update: ['post', '/api/apps/:username']
-      },
+  users: {
+    list: ['get', '/api/users/:partialname'],
+    update: ['post', '/api/apps/:username']
+  },
 
-      apps: {
-        list: ['get', '/api/apps/:username'],
-        create: ['post', '/api/apps/:username/:appname']
-      }
+  apps: {
+    list: ['get', '/api/apps/:username'],
+    create: ['post', '/api/apps/:username/:appname']
+  }
 
-    });
+});
 ```
 
 The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there is a verb and a path, where each path can have tokens in it that will get supplanted when used. An RPC call is simply a function name. Here is the above definition put in use...
 
 ```javascript
-    porter.users.list(
+porter.users.list(
 
-      { partialname: 'bill' },
+  { partialname: 'bill' },
 
-      function(error, response) {
-        
-        console.log(error || response);
-      }
+  function(error, response) {
+    // do something...
+  }
 
-    );
+);
 ```
 
 The `list` function was generated from its definition in the `users` group. We pass it 1) an object literal that supplants the token in the request url and 2) a callback function that will process when the request is done.
@@ -39,50 +38,49 @@ The `list` function was generated from its definition in the `users` group. We p
 In most cases you will want to make assertions on the outgoing and incoming data.
 
 ```javascript
+function hasData(data) { // a simple data validator.
+  if(typeof data !== 'undefined') {
+    return true;
+  }
+}
 
-    function hasData(data) { // a simple data validator.
-      if(typeof data !== 'undefined') {
-        return true;
-      }
+var porter = Porter({
+
+  admin: {
+    users: {
+      list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
+      update: ['post', '/api/apps/:username']
+    },
+
+    apps: {
+      list: ['get', '/api/apps/:username'],
+      create: ['post', '/api/apps/:username/:appname']
     }
-
-    var porter = Porter({
-
-      admin: {
-        users: {
-          list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
-          update: ['post', '/api/apps/:username']
-        },
-
-        apps: {
-          list: ['get', '/api/apps/:username'],
-          create: ['post', '/api/apps/:username/:appname']
-        }
-      }
-    });
+  }
+});
 ```
 
 ### Specifying settings that apply to all calls that get made...
 
 ```javascript
-  var porter = Porter({
+var porter = Porter({
 
-    users: {
-      list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
-      update: ['post', '/api/apps/:username', { in: hasData }]
-    },
+  users: {
+    list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
+    update: ['post', '/api/apps/:username', { in: hasData }]
+  },
 
-    apps: {
-      list: ['get', '/api/apps/:username', { in: hasData }],
-      create: ['post', '/api/apps/:username/:appname', { in: hasData }]
-    }
+  apps: {
+    list: ['get', '/api/apps/:username', { in: hasData }],
+    create: ['post', '/api/apps/:username/:appname', { in: hasData }]
+  }
 
-  }).use({
-    port: 8080,
-    in: fn1,
-    out: fn2,
-    headers: { 'Accept': 'application/json' }
-  });
+}).use({
+  port: 8080,
+  in: fn1,
+  out: fn2,
+  headers: { 'Accept': 'application/json' }
+});
 ```
 
 The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
@@ -98,17 +96,17 @@ The `use` function sets the defaults for all calls that get made. It accepts an 
 And here is the above code in use...
 
 ```javascript
-  porter.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
+porter.headers['Authorization'] = 'Basic ' + encodeBase64('username:password');
 
-  porter.users.update(
-    
-    { partialname: 'bill' },
-    { address: '555 Mockingbird Ln' },
-    
-    function(error, response) {
-      console.log(error || response);
-    }
-  );
+porter.users.update(
+  
+  { partialname: 'bill' },
+  { address: '555 Mockingbird Ln' },
+  
+  function(error, response) {
+    console.log(error || response);
+  }
+);
 ```
 
 The `update` function was generated from its definition in the `users` group. We pass it a payload object, some data to replace the url tokens with and a callback function for when the request has finished processing. The app object will also expose the headers collection, this is simply an object literal that contains the headers to be used for the request.
@@ -116,42 +114,42 @@ The `update` function was generated from its definition in the `users` group. We
 ### Specifying what to do with the response.
 
 ```javascript
-  var porter = Porter({
+var porter = Porter({
 
-    users: {
-      list: ['get', '/api/users/:partialname']
-    }
+  users: {
+    list: ['get', '/api/users/:partialname']
+  }
 
-  }).use({
-    port: 8080,
-    host: 'google.com'
-  }).on({
-    '500': function(err, response) {
-      // do something...
-    },
-    '404': function(err, response) {
-      // do something...
-    }
-  });
+}).use({
+  port: 8080,
+  host: 'google.com'
+}).on({
+  '500': function(err, response) {
+    // do something...
+  },
+  '404': function(err, response) {
+    // do something...
+  }
+});
 ```
 
 In a lot of cases you'll want to handle http responses based on their response code. using the `on` method will allow you to associate methods with these response codes. In some cases you'll want to explicitly override these http response code handlers. you can do this by replacing the regular callback method with an object literal containing the items to overwrite.
 
 ```javascript
-  porter.users.update(
-    
-    { partialname: 'bill' },
-    { address: '555 Mockingbird Ln' },
-    
-    {
-      '404': function(err, response) {
-        // do something...
-      },
-      '500': function(err, response) {
-        // do something...
-      }
+porter.users.update(
+  
+  { partialname: 'bill' },
+  { address: '555 Mockingbird Ln' },
+  
+  {
+    '404': function(err, response) {
+      // do something...
+    },
+    '500': function(err, response) {
+      // do something...
     }
-  );
+  }
+);
 ```
 
 Porter provides a simple Node.js server to complement it's test suite. You may find this a useful starting point for your own test suite.
