@@ -48,7 +48,7 @@ var porter = Porter({
 
   admin: {
     users: {
-      list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
+      list: ['get', '/api/users/:partialname', { outbound: hasData, inbound: hasData }],
       update: ['post', '/api/apps/:username']
     },
 
@@ -66,19 +66,19 @@ var porter = Porter({
 var porter = Porter({
 
   users: {
-    list: ['get', '/api/users/:partialname', { out: hasData, in: hasData }],
-    update: ['post', '/api/apps/:username', { in: hasData }]
+    list: ['get', '/api/users/:partialname', { outbound: hasData, inbound: hasData }],
+    update: ['post', '/api/apps/:username', { inbound: hasData }]
   },
 
   apps: {
-    list: ['get', '/api/apps/:username', { in: hasData }],
-    create: ['post', '/api/apps/:username/:appname', { in: hasData }]
+    list: ['get', '/api/apps/:username', { inbound: hasData }],
+    create: ['post', '/api/apps/:username/:appname', { inbound: hasData }]
   }
 
 }).use({
   port: 8080,
-  in: fn1,
-  out: fn2,
+  inbound: hasData,
+  outbound: hasData,
   headers: { 'Accept': 'application/json' }
 });
 ```
@@ -91,7 +91,7 @@ The `use` function sets the defaults for all calls that get made. It accepts an 
 `host` String - An IP address of the host server that will accept the requests.<br/>
 `headers` Object - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` String - The protocol to be used for all requests, ie 'http', 'https'.<br/>
-`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library *add this back!*.<br/>
+`lib` Object - If you want to use a more full featured, cross-browser friendly ajax library * ***add this back!*** *.<br/>
 
 And here is the above code in use...
 
@@ -104,7 +104,7 @@ porter.users.update(
   { address: '555 Mockingbird Ln' },
   
   function(error, response) {
-    console.log(error || response);
+    // do something...
   }
 );
 ```
