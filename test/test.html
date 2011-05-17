@@ -1,12 +1,13 @@
 <html>
   <head>
     <title>Porter unit tests.</title>
+    <script src="../lib/Porter.js"></script>
     <script src="vendor/nodeunit.js"></script>
     <script src="restSuite.js"></script>
     <script src="rpcSuite.js"></script>
     <style>
       html{height:100%;-webkit-font-smoothing:antialiased;margin:0;padding:0;border:0;overflow-y:scroll}
-      body{height:100%;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;text-align:center;margin:0;padding:0;border:0;background:#3c5a76 url('tests_bg.png') no-repeat center; margin: 50px;}
+      body{height:100%;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;text-align:left;margin:0;padding:0;border:0;background:#414141 url('tests_bg.png') no-repeat center; margin: 50px;}
       input,button,select,option{font-family:Arial,'Helvetica Neue',Helvetica,sans-serif}
       h2{color:#fff;font-size:25px;font-weight:bold;text-shadow:0 1px 4px rgba(0,0,0,0.68);letter-spacing:-1px;margin:0}
       .pass, .fail, h3 {color:#222;font-size:18px;line-height:24px;text-shadow:0 1px 1px rgba(255,255,255,0.33)}
@@ -16,13 +17,41 @@
     </style>
   </head>
   <body>
-    <img src="../doc/logo.png" width="163" height="163" alt="Logo">
+    <img src="../doc/logo.png" width="163" height="163" alt="logo">
     <br/><br/>
     <script>
+
+      function hasData(val) {
+        if(typeof val !== 'undefined') {
+          return true;
+        }
+      }
+
+      var io = Porter({
+
+        'groupA': {
+          'resourceA': ['get', '/test1'],
+          'resourceB': ['put', '/test1'],
+          'resourceC': ['put', '/test1', { 'in': hasData, 'out': hasData }]
+        },
+        'groupB': {
+          'resourceA': ['get', '/test2'],
+          'resourceB': ['post', '/test2/:id']
+        }
+        
+      }).use({
+
+        protocol: 'http',
+        host: '127.0.0.1',
+        port: '8080'
+
+      });
+    
       nodeunit.run({
         'REST Suite': restSuite,
         'RPC Suite': rpcSuite
       });
+
     </script>
   </body>
 </html>
