@@ -1,6 +1,6 @@
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/logo.png)<br/>
 
-### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST and RPC calls. It will generate methods needed to access resources based on a JSON configuration. It will balance your code's signal to noise ratio by simplifying the communication interfaces.
+### porter is a lightweight, resourced oriented, abstraction layer for JSON-REST. It will generate methods needed to access resources based on a JSON configuration. It will balance your code's signal to noise ratio by simplifying the communication interfaces.
 
 ```javascript
 var porter = Porter({
@@ -18,7 +18,7 @@ var porter = Porter({
 });
 ```
 
-The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there is a verb and a path, where each path can have tokens in it that will get supplanted when used. An RPC call is simply a function name. Here is the above definition put in use...
+The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there is a verb and a path, where each path can have tokens in it that will get supplanted when used. Here is the above definition put in use...
 
 ```javascript
 porter.users.list(
@@ -151,6 +151,7 @@ porter.users.update(
   }
 );
 ```
+
 
 ### Testing and debugging.
 
