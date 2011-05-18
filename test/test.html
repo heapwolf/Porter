@@ -32,7 +32,7 @@
         'groupA': {
           'resourceA': ['get', '/test1'],
           'resourceB': ['put', '/test1'],
-          'resourceC': ['put', '/test1', { 'in': hasData, 'out': hasData }]
+          'resourceC': ['put', '/test1', { inbound: hasData, outbound: hasData }]
         },
         'groupB': {
           'resourceA': ['get', '/test2'],
