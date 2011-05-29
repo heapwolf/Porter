@@ -23,8 +23,8 @@ The Porter constructor takes a single object literal containing members grouped 
 ```javascript
 porter.users.list(
 
-  { partialname: 'bill' },
-
+  { partialname: 'bill' }, // replaces the ':partialname' token in the 'list' resource's URI.
+  { foo: 10, bar: 20 }, // appends '?foobar=10&bar=20' to the URL when the method is a GET, adds as a message body for a POST.
   function(error, response) {
     // do something...
   }
@@ -86,8 +86,8 @@ var porter = Porter({
 The `use` function sets the defaults for all calls that get made. It accepts an object literal containing the following members...
 
 `port` Number - The port of the server that will accept the requests.<br/>
-`in` Object - A JSONSchema object that will validate against every incoming request.<br/>
-`out` Object - A JSONSchema object that will validate against every outgoing request.<br/>
+`inbound` Object - A JSONSchema object that will validate against every incoming request.<br/>
+`outbound` Object - A JSONSchema object that will validate against every outgoing request.<br/>
 `host` String - An IP address of the host server that will accept the requests.<br/>
 `headers` Object - An object literal of HTTP request headers that will be attached to each request.<br/>
 `protocol` String - The protocol to be used for all requests, ie 'http', 'https'.<br/>
