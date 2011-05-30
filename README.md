@@ -20,6 +20,8 @@ var porter = Porter({
 
 The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there is a verb and a path, where each path can have tokens in it that will get supplanted when used. Here is the above definition put in use...
 
+### Payload and Parameters
+
 ```javascript
 porter.users.list(
 
