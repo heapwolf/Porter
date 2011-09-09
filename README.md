@@ -18,6 +18,15 @@ var porter = Porter({
 });
 ```
 
+Produces the following methods.
+
+```javascript
+  porter.users.list(/* ... */);
+  porter.users.update(/* ... */);
+  porter.apps.list(/* ... */);
+  porter.apps.create(/* ... */);
+```
+
 The Porter constructor takes a single object literal containing members grouped by resource. Resources are then expressed as arrays. In the case of defining a REST call, there is a verb and a path, where each path can have tokens in it that will get supplanted when used. Here is the above definition put in use...
 
 ### Payload and Parameters
