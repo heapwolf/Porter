@@ -15,7 +15,7 @@ this.restSuite = {
       io.groupA.resourceA(
         {
           id: 10
-        }, 
+        },
         function(err, response) {
           test.ok(response, 'received data \'{data: "ok"}\' from test server ' + response);
           test.done();
@@ -63,43 +63,43 @@ this.restSuite = {
         }
       );
 
-    },    
+    },
     'POST to unittests/test1, payload, url token replacement': function (test) {
       setTimeout(function () {
         // lots of assertions
         test.ok(true, 'everythings ok');
         test.done();
-      }, 10);      
+      }, 10);
     },
-    
-    
+
+
     'GET from unittests/test1, no params': function (test) {
       setTimeout(function () {
         // lots of assertions
         test.ok(true, 'everythings ok');
         test.done();
-      }, 10);      
+      }, 10);
     },
     'GET from unittests/test1, no params, url token replacement': function (test) {
       setTimeout(function () {
         // lots of assertions
         test.ok(true, 'everythings ok');
         test.done();
-      }, 10);      
+      }, 10);
     },
     'GET from unittests/test1, params': function (test) {
       setTimeout(function () {
         // lots of assertions
         test.ok(true, 'everythings ok');
         test.done();
-      }, 10);      
+      }, 10);
     },
     'GET from unittests/test1, params, url token replacement': function (test) {
       setTimeout(function () {
         // lots of assertions
         test.ok(true, 'everythings ok');
         test.done();
-      }, 10);      
+      }, 10);
     }
 
 };
