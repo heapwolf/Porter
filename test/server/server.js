@@ -10,11 +10,15 @@ var sys = require('sys'),
     url = require('url'),
     nstatic = require('node-static');
 
-var files = new nstatic.Server('../../'),
+var files = new nstatic.Server(__dirname + '/../../'),
     server = http.createServer(function (request, response) {
 
-      if (request.url.match(/^\/test1/)) {
+      if (request.url.match(/^\/(test1|test2|deep\/url)/)) {
         response.end('{ data: "ok" }');
+      }
+      else if (request.url.match(/^\/\d+/)) {
+        response.writeHead(+request.url.match(/\d+/)[0]);
+        response.end('');
       }
       else {
 
