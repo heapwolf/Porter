@@ -1,0 +1,17 @@
+{
+  "name": "Porter",
+  "description": "...",
+  "version": "0.0.1",
+
+  "private": true,
+
+  "devDependencies": {
+    "node-static": "0.5.x",
+    "colors": "0.5.x",
+    "eyes": "0.1.x"
+  },
+
+  "scripts": {
+    "test": "node test/server/server.js"
+  }
+}

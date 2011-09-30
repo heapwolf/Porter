@@ -10,7 +10,7 @@ var sys = require('sys'),
     url = require('url'),
     nstatic = require('node-static');
 
-var files = new nstatic.Server('../../'),
+var files = new nstatic.Server(__dirname + '/../../'),
     server = http.createServer(function (request, response) {
 
       if (request.url.match(/^\/test1/)) {
