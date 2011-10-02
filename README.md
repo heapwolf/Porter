@@ -166,15 +166,18 @@ porter.users.update(
 
 ### Testing and debugging.
 
-Porter provides a simple Node.js server to complement it's test suite. You may find this a useful starting point for your own test suite.
+Porter provides a simple Node.js server to complement it's test suite.
+You may find this a useful starting point for your own test suite.
+Running `npm install && npm test` from root folder of this project will start
+development server that will be used for serving tests.
 ![Alt text](https://github.com/hij1nx/Porter/raw/master/doc/test.png)<br/>
 
 
 ## Credits
 
-Author: hij1nx
+Author: @hij1nx
 
-Contributors: indexzero, marak
+Contributors: @indexzero, @marak, @indutny
 
 ## Licence
 

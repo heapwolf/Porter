@@ -2,6 +2,50 @@
   <head>
     <title>Porter unit tests.</title>
     <script src="../lib/Porter.js"></script>
+    <script>
+
+      function hasData(val) {
+        if(typeof val !== 'undefined') {
+          return true;
+        }
+      }
+
+      var io = Porter(window.PorterConfig = {
+
+        'groupA': {
+          'resourceA': ['get', '/test1'],
+          'resourceB': ['put', '/test1'],
+          'resourceC': ['put', '/test1', { inbound: hasData, outbound: hasData }]
+        },
+        'groupB': {
+          'resourceA': ['get', '/test2'],
+          'resourceB': ['post', '/test2/:id'],
+          'resourceC': ['post', '/test2/:id/:name']
+        },
+        'a': {
+          'b': {
+            'c': {
+              'd': {
+                'e': {
+                  'f': ['get', '/deep/url']
+                }
+              }
+            }
+          }
+        },
+        '404': ['get', '/404'],
+        '403': ['get', '/403'],
+        '402': ['get', '/402'],
+        '401': ['get', '/401']
+        
+      }).use({
+
+        protocol: 'http',
+        host: '127.0.0.1',
+        port: '8080'
+
+      });
+    </script>
     <script src="vendor/nodeunit.js"></script>
     <script src="restSuite.js"></script>
     <script src="rpcSuite.js"></script>
@@ -17,32 +61,6 @@
     <img src="../doc/logo.png" width="163" height="163" alt="logo">
     <br/><br/>
     <script>
-
-      function hasData(val) {
-        if(typeof val !== 'undefined') {
-          return true;
-        }
-      }
-
-      var io = Porter({
-
-        'groupA': {
-          'resourceA': ['get', '/test1'],
-          'resourceB': ['put', '/test1'],
-          'resourceC': ['put', '/test1', { inbound: hasData, outbound: hasData }]
-        },
-        'groupB': {
-          'resourceA': ['get', '/test2'],
-          'resourceB': ['post', '/test2/:id']
-        }
-        
-      }).use({
-
-        protocol: 'http',
-        host: '127.0.0.1',
-        port: '8080'
-
-      });
     
       nodeunit.run({
         'REST Suite': restSuite,
